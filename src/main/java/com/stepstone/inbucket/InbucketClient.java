@@ -27,9 +27,9 @@ import java.util.List;
 
 public class InbucketClient {
 
-    protected InbucketService service;
+    InbucketService service;
 
-    protected InbucketService simpleService;
+    InbucketService simpleService;
 
     public InbucketClient(String baseUrl){
         Retrofit retrofit = new Retrofit.Builder()
@@ -66,6 +66,16 @@ public class InbucketClient {
     }
 
     /**
+     * Method calls inbuckets GET /api/v1/mailbox/{mailboxName}/{messageId} endpoint
+     * @param messageInfo of message to get
+     * @return Message object
+     * @throws IOException if something went wrong
+     */
+    public Message getMessage(MessageInfo messageInfo) throws IOException {
+        return service.getMessage(messageInfo.mailbox, messageInfo.id).execute().body();
+    }
+
+    /**
      * Method calls inbuckets GET /api/v1/mailbox/{mailboxName}/{messageId}/source endpoint
      * @param mailboxName name of mailbox
      * @param messageId id of message
@@ -74,6 +84,16 @@ public class InbucketClient {
      */
     public String getMessageSource(String mailboxName, String messageId) throws IOException {
         return simpleService.getMessageSource(mailboxName, messageId).execute().body().string();
+    }
+
+    /**
+     * Method calls inbuckets GET /api/v1/mailbox/{mailboxName}/{messageId}/source endpoint
+     * @param messageInfo of message
+     * @return message source
+     * @throws IOException if something went wrong
+     */
+    public String getMessageSource(MessageInfo messageInfo) throws IOException {
+        return simpleService.getMessageSource(messageInfo.mailbox, messageInfo.id).execute().body().string();
     }
 
 
@@ -95,6 +115,16 @@ public class InbucketClient {
      * @throws IOException on error
      */
     public String deleteMessage(String mailboxName, String messageId) throws IOException {
-        return service.deleteMessage(mailboxName,messageId).execute().body();
+        return service.deleteMessage(mailboxName, messageId).execute().body();
+    }
+
+    /**
+     *  Method calls inbuckets DELETE /api/v1/mailbox/{mailboxName}/{messageId} endpoint
+     * @param messageInfo message
+     * @return "OK" string on success null on error
+     * @throws IOException on error
+     */
+    public String deleteMessage(MessageInfo messageInfo) throws IOException {
+        return service.deleteMessage(messageInfo.mailbox, messageInfo.id).execute().body();
     }
 }
